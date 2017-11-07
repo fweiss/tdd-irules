@@ -1,0 +1,32 @@
+package require tcltest
+namespace import ::tcltest::*
+
+namespace eval HTTP {
+    set thehost ""
+    proc host {args} {
+         if {[llength $args] == 0} {
+            return $HTTP::thehost
+         } else {
+            set HTTP::thehost [lindex $args 0]
+         }
+    }
+    proc uri {} { return "/commerce/store/orders" }
+}
+
+proc when {event, lambda} {
+    # should import bigfive library for this
+    proc getfield {value delim index} {
+        set fields [split $value $delim]
+        return [lindex $fields $index]
+    }
+    # should be mock to save/verify value
+    proc pool {args} {}
+    eval $lambda
+}
+
+
+HTTP::host "api.example.com"
+
+source irule.tcl
+
+test first {} -body { HTTP::host } -result "int.api.example.com"
