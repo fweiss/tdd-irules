@@ -29,6 +29,6 @@ HTTP::host "api.example.com"
 
 source irule.tcl
 
-test first {} -body { HTTP::host } -result "int.api.example.com"
+test first {rewrites host} { HTTP::host } "int.api.example.com"
 
 cleanupTests
