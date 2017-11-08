@@ -3,6 +3,7 @@ namespace import ::tcltest::*
 
 namespace eval HTTP {
     set thehost ""
+    set theuri "/v1/store/orders"
     proc host {args} {
          if {[llength $args] == 0} {
             return $HTTP::thehost
@@ -10,7 +11,13 @@ namespace eval HTTP {
             set HTTP::thehost [lindex $args 0]
          }
     }
-    proc uri {} { return "/commerce/store/orders" }
+    proc uri {args} {
+        if {[llength $args] == 0} {
+            return $HTTP::theuri
+        } else {
+            set HTTP::theuri [lindex $args 0]
+        }
+    }
 }
 
 proc when {event, lambda} {
@@ -30,5 +37,14 @@ HTTP::host "api.example.com"
 source irule.tcl
 
 test first {rewrites host} { HTTP::host } "int.api.example.com"
+
+# test a {d} { setup(HTTP::host,HTTP::uri) actuate(source?) } expect
+
+test first {host unchanged for non-int path} {
+    HTTP::host "api.example.com"
+    HTTP::uri "/v1/store/nonint"
+    source irule.tcl
+    HTTP::host
+} "api.example.com"
 
 cleanupTests
